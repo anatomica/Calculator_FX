@@ -82,12 +82,10 @@ public class CalculatorEngine implements EventHandler<ActionEvent> {
                 str = str.substring(0, str.length() - 1);
                 controller.displayField.setText(str);
             }
-            //Calculator.displayField.setText("");
         } else if (screen == controller.numButtons[19]) {
             action = '+';
             result = displayValue;
             mark = 1;
-            // Calculator.displayField.setText("");
         } else if (screen == controller.numButtons[15]) {
             if (displayValue == 0 && controller.displayField.getText().equals(""))
                 controller.displayField.setText(buttonLabel + "0");
@@ -128,41 +126,7 @@ public class CalculatorEngine implements EventHandler<ActionEvent> {
             result = displayValue;
             mark = 1;
         } else if (screen == controller.numButtons[2] && displayValue != 0) {
-            double age = Math.pow (0.993, result);
-            double mg = displayValue/88.4;
-            double skf;
-            double GFR = 1;
-            if (sex == 'W' && mg <= 0.7) {
-                skf = Math.pow ((mg/0.7), -0.329);
-                GFR = 144 * skf * age;
-            }
-            if (sex == 'W' && mg > 0.7) {
-                skf = Math.pow ((mg/0.7), -1.209);
-                GFR = 144 * skf * age;
-            }
-            if (sex == 'M' && mg <= 0.9) {
-                skf = Math.pow ((mg/0.9), -0.411);
-                GFR = 141 * skf * age;
-            }
-            if (sex == 'M' && mg > 0.9) {
-                skf = Math.pow ((mg/0.9), -1.209);
-                GFR = 141 * skf * age;
-            }
-            BigDecimal aroundGFR = new BigDecimal(GFR).setScale(0, RoundingMode.HALF_EVEN);
-            controller.displayField.setText("" + aroundGFR);
-            if (GFR > 90)
-                value = "1";
-            if (GFR< 90 && GFR >= 60)
-                value = "2";
-            if (GFR < 60 && GFR >= 45)
-                value = "3а";
-            if (GFR < 45 && GFR >= 30)
-                value = "3б";
-            if (GFR < 30 && GFR >= 15)
-                value = "4";
-            if (GFR < 15 && GFR > 0)
-                value = "5";
-            controller.showMessage("СКФ (по формуле CKD-EPI): = " + aroundGFR + " мл/мин/1,73м2\n" +
+            controller.showMessage("СКФ (по формуле CKD-EPI): = " + resultSKF() + " мл/мин/1,73м2\n" +
                     "Градация " + value + "  (по классификации KDIGO)");
         } else if (screen == controller.numButtons[3]) {
             action = 'I';
@@ -177,7 +141,6 @@ public class CalculatorEngine implements EventHandler<ActionEvent> {
                 str.deleteCharAt(0);
                 controller.displayField.setText(String.valueOf(str));
             }
-            //Calculator.displayField.setText("");
         } else if (screen == controller.numButtons[23]) {
 
             //  Арифметическое действие
@@ -205,34 +168,53 @@ public class CalculatorEngine implements EventHandler<ActionEvent> {
                 }
                 controller.displayField.setText("" + withFiveDigits(stringWithoutZero(result)));
             } else if (action == 'K' && displayValue != 0) {
-                double age = Math.pow (0.993, result);
-                double mg = displayValue/88.4;
-                double skf;
-                double GFR = 1;
-                if (sex == 'W' && mg <= 0.7) {
-                    skf = Math.pow ((mg/0.7), -0.329);
-                    GFR = 144 * skf * age;
-                }
-                if (sex == 'W' && mg > 0.7) {
-                    skf = Math.pow ((mg/0.7), -1.209);
-                    GFR = 144 * skf * age;
-                }
-                if (sex == 'M' && mg <= 0.9) {
-                    skf = Math.pow ((mg/0.9), -0.411);
-                    GFR = 141 * skf * age;
-                }
-                if (sex == 'M' && mg > 0.9) {
-                    skf = Math.pow ((mg/0.9), -1.209);
-                    GFR = 141 * skf * age;
-                }
-                BigDecimal aroundGFR = new BigDecimal(GFR).setScale(0, RoundingMode.HALF_EVEN);
-                controller.displayField.setText("" + aroundGFR);
+                resultSKF();
             } else if (action == 'I') {
                 result = result / ((displayValue /100) * (displayValue / 100));
                 BigDecimal aroundIMT = new BigDecimal(result).setScale(1, RoundingMode.HALF_EVEN);
                 controller.displayField.setText("" + aroundIMT);
             }
         }
+    }
+
+    private BigDecimal resultSKF() {
+        double age = Math.pow (0.993, result);
+        double mg = displayValue/88.4;
+        double skf;
+        double GFR = 1;
+        if (sex == 'W' && mg <= 0.7) {
+            skf = Math.pow ((mg/0.7), -0.329);
+            GFR = 144 * skf * age;
+        }
+        if (sex == 'W' && mg > 0.7) {
+            skf = Math.pow ((mg/0.7), -1.209);
+            GFR = 144 * skf * age;
+        }
+        if (sex == 'M' && mg <= 0.9) {
+            skf = Math.pow ((mg/0.9), -0.411);
+            GFR = 141 * skf * age;
+        }
+        if (sex == 'M' && mg > 0.9) {
+            skf = Math.pow ((mg/0.9), -1.209);
+            GFR = 141 * skf * age;
+        }
+        BigDecimal aroundGFR = new BigDecimal(GFR).setScale(0, RoundingMode.HALF_EVEN);
+        controller.displayField.setText("" + aroundGFR);
+
+        if (GFR > 90)
+            value = "1";
+        if (GFR< 90 && GFR >= 60)
+            value = "2";
+        if (GFR < 60 && GFR >= 45)
+            value = "3а";
+        if (GFR < 45 && GFR >= 30)
+            value = "3б";
+        if (GFR < 30 && GFR >= 15)
+            value = "4";
+        if (GFR < 15 && GFR > 0)
+            value = "5";
+        
+        return aroundGFR;
     }
 
     private String stringWithoutZero(double result) {
