@@ -17,6 +17,8 @@ public class CalculatorEngine implements EventHandler<ActionEvent> {
     private double displayValue = 0; // Значение на экране
     private int mark = 0; // Метка
     private String value;
+    private int SKF = 0;
+    private int QT = 0;
 
     public CalculatorEngine(Controller controller) {
         this.controller = controller;
@@ -125,13 +127,22 @@ public class CalculatorEngine implements EventHandler<ActionEvent> {
             action = 'K';
             result = displayValue;
             mark = 1;
-        } else if (screen == controller.numButtons[2] && displayValue != 0) {
-            controller.showMessage("СКФ (по формуле CKD-EPI): = " + resultSKF() + " мл/мин/1,73м2\n" +
-                    "Градация " + value + "  (по классификации KDIGO)");
-        } else if (screen == controller.numButtons[3]) {
-            action = 'I';
+            SKF = 1;
+        } else if (screen == controller.numButtons[2]) {
+            action = 'Q';
             result = displayValue;
             mark = 1;
+            QT = 1;
+        } else if ((SKF == 1 || QT == 1) && screen == controller.numButtons[3] && displayValue != 0) {
+            if (SKF == 1) {
+                controller.showMessage("СКФ (по формуле CKD-EPI): = " + resultSKF() + " мл/мин/1,73м2\n" +
+                        "Градация " + value + "  (по классификации KDIGO)");
+                SKF = 0;
+            }
+            if (QT == 1) {
+                controller.showMessage("QTc (по формуле Базетта) = " + resultQTc() + " мсек\n");
+                QT = 0;
+            }
         } else if (screen == controller.numButtons[20]) {
             StringBuilder str = new StringBuilder(controller.displayField.getText());
             if (str.length() > 0 && str.charAt(0) != '-') {
@@ -173,6 +184,8 @@ public class CalculatorEngine implements EventHandler<ActionEvent> {
                 result = result / ((displayValue /100) * (displayValue / 100));
                 BigDecimal aroundIMT = new BigDecimal(result).setScale(1, RoundingMode.HALF_EVEN);
                 controller.displayField.setText("" + aroundIMT);
+            } else if (action == 'Q') {
+                resultQTc();
             }
         }
     }
@@ -213,8 +226,17 @@ public class CalculatorEngine implements EventHandler<ActionEvent> {
             value = "4";
         if (GFR < 15 && GFR > 0)
             value = "5";
-        
+
         return aroundGFR;
+    }
+
+    private BigDecimal resultQTc() {
+        // QTс(S) = QT + 0,154×(1000 − RR)
+        double heartRate = 60 / result;
+        double QTc = displayValue / Math.sqrt(heartRate);
+        BigDecimal aroundQTc = new BigDecimal(QTc).setScale(0, RoundingMode.HALF_EVEN);
+        controller.displayField.setText("" + aroundQTc);
+        return aroundQTc;
     }
 
     private String stringWithoutZero(double result) {

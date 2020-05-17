@@ -34,7 +34,7 @@ public class Controller implements Initializable {
         displayField.setFocusTraversable(false);
         displayField.setText("0");
 
-        String[] buttonName = {"Жен", "Креат", "СКФ", "ИМТ", "C", "<=", "(^)", "/",
+        String[] buttonName = {"Жен", "Креат", "QT", "СКФ /\nQTc", "C", "<=", "(^)", "/",
                 "1", "2", "3", "*", "4", "5", "6", "-", "7", "8", "9", "+", "+/-", "0", ".", "="};
 
         for (int i = 0; i < numButtons.length; i++) {
@@ -42,9 +42,7 @@ public class Controller implements Initializable {
                 if (i == j) {
                     numButtons[j] = new Button(buttonName[i]);
                     numButtons[j].setOnAction(calculatorEngine);
-                    if (i >= 7 && i != 20) {
-                        numButtons[j].setFont(Font.font(" ", 22));
-                    }
+                    if (i > 6) numButtons[j].setFont(Font.font(" ", 22));
                 }
             }
         }
@@ -55,7 +53,10 @@ public class Controller implements Initializable {
                 gridPane.add(numButtons[count], j, i);
                 numButtons[count].setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
                 if (count >= 8 && count <= 10 || count >= 12 && count <= 14 ||
-                        count >= 16 && count <= 18 || count == 21) numButtons[count].setStyle("-fx-background-color: snow;");
+                        count >= 16 && count <= 18 || count == 21) {
+                    numButtons[count].setStyle("-fx-background-color: snow;");
+                    numButtons[count].setFont(Font.font(" ", FontWeight.BOLD, 22));
+                }
                 // else numButtons[count].setStyle("-fx-background-color: aliceblue;");
                 gridPane.setStyle("-fx-background-color: lightgray;");
                 gridPane.setHgap(5);
