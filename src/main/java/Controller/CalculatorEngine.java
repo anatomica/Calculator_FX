@@ -162,8 +162,8 @@ public class CalculatorEngine implements EventHandler<ActionEvent> {
                 value = "4";
             if (GFR < 15 && GFR > 0)
                 value = "5";
-//            controller.showMessage("СКФ (по формуле CKD-EPI): = " + aroundGFR + " мл/мин/1,73м2\n" +
-//                    "Градация " + value + "  (по классификации KDIGO)");
+            controller.showMessage("СКФ (по формуле CKD-EPI): = " + aroundGFR + " мл/мин/1,73м2\n" +
+                    "Градация " + value + "  (по классификации KDIGO)");
         } else if (screen == controller.numButtons[3]) {
             action = 'I';
             result = displayValue;

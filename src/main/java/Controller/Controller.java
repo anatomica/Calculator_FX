@@ -1,13 +1,17 @@
 package Controller;
 
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Pos;
-import javafx.scene.control.Button;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
+import org.apache.commons.lang3.exception.ExceptionUtils;
+
+import javax.swing.*;
 import java.net.URL;
 import java.util.ResourceBundle;
 
@@ -62,6 +66,21 @@ public class Controller implements Initializable {
                 count++;
             }
         }
+    }
+
+    public void showMessage (String message) {
+        Platform.runLater(() -> {
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("Информация!");
+            alert.setHeaderText("Результат расчета:");
+            VBox dialogPaneContent = new VBox();
+            TextArea textArea = new TextArea();
+            textArea.setText(message);
+            dialogPaneContent.getChildren().addAll(textArea);
+            alert.getDialogPane().setContent(dialogPaneContent);
+            alert.setResizable(true);
+            alert.showAndWait();
+        });
     }
 }
 
