@@ -1,6 +1,7 @@
 package Controller;
 
 import javafx.application.Platform;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Pos;
@@ -20,6 +21,8 @@ public class Controller implements Initializable {
     public GridPane gridPane;
     @FXML
     public MenuItem shutDown;
+    @FXML
+    public MenuItem createSKF;
 
     public Button[] numButtons = new Button[24];
     public CalculatorEngine calculatorEngine = new CalculatorEngine(this);
@@ -37,7 +40,7 @@ public class Controller implements Initializable {
         displayField.setFocusTraversable(false);
         displayField.setText("0");
 
-        String[] buttonName = {"Жен", "Креат", "QT", "СКФ /\nQTc", "C", "<=", "(^)", "/",
+        String[] buttonName = {"Жен", "Подсчет \nСКФ", "Подсчет QT", "= СКФ \n= QTc", "Сброс", "<=", "(^)", "/",
                 "1", "2", "3", "*", "4", "5", "6", "-", "7", "8", "9", "+", "+/-", "0", ".", "="};
 
         for (int i = 0; i < numButtons.length; i++) {
@@ -45,6 +48,7 @@ public class Controller implements Initializable {
                 if (i == j) {
                     numButtons[j] = new Button(buttonName[i]);
                     numButtons[j].setOnAction(calculatorEngine);
+                    if (i <= 6) numButtons[j].setFont(Font.font(" ", 13));
                     if (i > 6) numButtons[j].setFont(Font.font(" ", 22));
                 }
             }
@@ -82,6 +86,37 @@ public class Controller implements Initializable {
             alert.setResizable(true);
             alert.showAndWait();
         });
+    }
+
+    public void howCreateSKF() {
+        informationMessage("Для подсчета СКФ (по формуле CKD-EPI) вам необходимо " +
+                "сначала выбрать пол пациента и ввести его возраст; потом нажать на кнопку 'Подсчет СКФ' и " +
+                "ввести уровень креатинина в мкмоль/л. Для получения результата нажмите '= СКФ'", "Инструкция!");
+    }
+
+    public void howCreateCrockroft() {
+        informationMessage("Для подсчета СКФ (по формуле Кокрофта-Голта) вам необходимо " +
+                "сначала выбрать пол пациента и ввести его возраст; потом нажать на кнопку 'Подсчет СКФ', " +
+                "ввести уровень креатинина в мкмоль/л, снова нажать на ту же кнопку и " +
+                "ввести вес пациента. Для получения результата нажмите '= СКФ'", "Инструкция!");
+    }
+
+    public void howCreateQTc() {
+        informationMessage("Для подсчета корригированного QT вам необходимо " +
+                "сначала ввести ЧСС, потом нажать на кнопку 'Подсчет QT' и " +
+                "ввести значение QT в мсек. Для получения результата нажмите '= QTc'", "Инструкция!");
+    }
+
+    public void about() {
+        informationMessage("Версия калькулятора 2.1 \nMaxim Fomin © 2019 – 2020 \nВсе права защищены.", "О приложении:");
+    }
+
+    private void informationMessage(String message, String type) {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle(type);
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
     }
 
     public void shutdown() {

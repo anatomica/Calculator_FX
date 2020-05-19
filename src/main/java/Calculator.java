@@ -15,7 +15,7 @@ public class Calculator extends javafx.application.Application {
 
     @Override
     public void start(Stage stage) throws Exception {
-        stage.setTitle("Калькулятор Макса");
+        stage.setTitle("Калькулятор СКФ");
         stage.getIcons().add(new Image("/calculator.png"));
         FXMLLoader loader = new FXMLLoader();
         loader.setLocation(getClass().getResource("/scene.fxml"));

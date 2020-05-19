@@ -2,6 +2,7 @@ package Controller;
 
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
@@ -14,6 +15,8 @@ public class CalculatorEngine implements EventHandler<ActionEvent> {
     private char action; // Арифметический метод
     private char sex = 'W';
     private double result = 0; // Результат выражения или значения
+    private double age;
+    private double kreatinin;
     private double displayValue = 0; // Значение на экране
     private int mark = 0; // Метка
     private String value;
@@ -78,8 +81,10 @@ public class CalculatorEngine implements EventHandler<ActionEvent> {
             QT = 0;
             SKF = 0;
             result = 0;
+            kreatinin = 0;
             displayValue = 0;
             controller.displayField.setText("0");
+            controller.numButtons[1].setText("Подсчет \nСКФ");
         } else if (screen == controller.numButtons[5]) {
             String str = controller.displayField.getText();
             if (str != null && str.length() > 0) {
@@ -126,18 +131,30 @@ public class CalculatorEngine implements EventHandler<ActionEvent> {
                 sex = 'W';
             }
         } else if (screen == controller.numButtons[1]) {
-            action = 'K';
-            result = displayValue;
-            mark = 1;
-            SKF = 1;
+            if (clickedButton.getText().equals("Подсчет \nСКФ")) {
+                clickedButton.setText("Введите \nкреатинин \nи нажмите");
+                clickedButton.setFont(Font.font(" ", 11));
+                action = 'K';
+                age = displayValue;
+                mark = 1;
+                SKF = 1;
+            }
+            else if (clickedButton.getText().equals("Введите \nкреатинин \nи нажмите")) {
+                clickedButton.setText("Введите \nвес");
+                clickedButton.setFont(Font.font(" ", 13));
+                action = 'W';
+                kreatinin = displayValue;
+                mark = 1;
+                SKF = 1;
+            }
         } else if (screen == controller.numButtons[2]) {
             action = 'Q';
             result = displayValue;
             mark = 1;
             QT = 1;
         } else if ((SKF == 1 || QT == 1) && screen == controller.numButtons[3] && displayValue != 0) {
-            if (SKF == 1) controller.showMessage("СКФ (по формуле CKD-EPI): = " + resultSKF() + " мл/мин/1,73м2\n" +
-                        "Градация " + value + "  (по классификации KDIGO)");
+            if (SKF == 1 && action == 'K') controller.showMessage(resultSKF("fromSKF"));
+            if (SKF == 1 && action == 'W') controller.showMessage(resultCockroft());
             if (QT == 1) controller.showMessage(resultQTc());
         } else if (screen == controller.numButtons[20]) {
             StringBuilder str = new StringBuilder(controller.displayField.getText());
@@ -175,7 +192,9 @@ public class CalculatorEngine implements EventHandler<ActionEvent> {
                 }
                 controller.displayField.setText("" + withFiveDigits(stringWithoutZero(result)));
             } else if (action == 'K' && displayValue != 0) {
-                resultSKF();
+                resultSKF("");
+            } else if (action == 'W' && displayValue != 0) {
+                resultCockroft();
             } else if (action == 'I') {
                 result = result / ((displayValue /100) * (displayValue / 100));
                 BigDecimal aroundIMT = new BigDecimal(result).setScale(1, RoundingMode.HALF_EVEN);
@@ -186,29 +205,31 @@ public class CalculatorEngine implements EventHandler<ActionEvent> {
         }
     }
 
-    private BigDecimal resultSKF() {
-        double age = Math.pow (0.993, result);
-        double mg = displayValue/88.4;
+    private String resultSKF(String from) {
+        double newAge = Math.pow (0.993, age);
+        if (from.equals("fromSKF")) kreatinin =  displayValue;
+        double mg = kreatinin/88.4;
         double skf;
         double GFR = 1;
         if (sex == 'W' && mg <= 0.7) {
             skf = Math.pow ((mg/0.7), -0.329);
-            GFR = 144 * skf * age;
+            GFR = 144 * skf * newAge;
         }
         if (sex == 'W' && mg > 0.7) {
             skf = Math.pow ((mg/0.7), -1.209);
-            GFR = 144 * skf * age;
+            GFR = 144 * skf * newAge;
         }
         if (sex == 'M' && mg <= 0.9) {
             skf = Math.pow ((mg/0.9), -0.411);
-            GFR = 141 * skf * age;
+            GFR = 141 * skf * newAge;
         }
         if (sex == 'M' && mg > 0.9) {
             skf = Math.pow ((mg/0.9), -1.209);
-            GFR = 141 * skf * age;
+            GFR = 141 * skf * newAge;
         }
         BigDecimal aroundGFR = new BigDecimal(GFR).setScale(0, RoundingMode.HALF_EVEN);
-        controller.displayField.setText("" + aroundGFR);
+        controller.numButtons[1].setText("Подсчет \nСКФ");
+        if (from.equals("fromSKF")) controller.displayField.setText("" + aroundGFR);
 
         if (GFR > 90)
             value = "1";
@@ -224,7 +245,26 @@ public class CalculatorEngine implements EventHandler<ActionEvent> {
             value = "5";
 
         SKF = 0;
-        return aroundGFR;
+        return ("СКФ (по формуле CKD-EPI): = " + aroundGFR + " мл/мин/1,73м2\n" +
+                "Градация " + value + "  (по классификации KDIGO)");
+    }
+
+    private String resultCockroft() {
+        double weight = displayValue;
+        double men = 1.23;
+        double women = 1.05;
+        double GFR = 1;
+        if (sex == 'M') GFR = men * ((140 - age) * weight) / kreatinin;
+        if (sex == 'W') GFR = women * ((140 - age) * weight) / kreatinin;
+        BigDecimal aroundGFR = new BigDecimal(GFR).setScale(0, RoundingMode.HALF_EVEN);
+        controller.numButtons[1].setText("Подсчет \nСКФ");
+        controller.displayField.setText("" + aroundGFR);
+        SKF = 0;
+
+        if (sex == 'M') return (resultSKF("fromCockroft") + "\n\nСКФ (по формуле Кокрофта-Голта): = " + aroundGFR + " мл/мин\n" +
+                "В норме для мужчин: 90 - 150 мл/мин");
+        else return (resultSKF("fromCockroft") + "\n\nСКФ (по формуле Кокрофта-Голта): = " + aroundGFR + " мл/мин\n" +
+                "В норме для женщин: 90 - 130 мл/мин");
     }
 
     private String resultQTc() {
@@ -234,7 +274,7 @@ public class CalculatorEngine implements EventHandler<ActionEvent> {
             BigDecimal aroundQTc = new BigDecimal(QTc).setScale(0, RoundingMode.HALF_EVEN);
             controller.displayField.setText("" + aroundQTc);
             QT = 0;
-            return ("QTc (по формуле Базетта) = " + aroundQTc + " мсек\n");
+            return ("QTc (по формуле Базетта) = " + aroundQTc + " мсек\n\n Референтные значения корригированного QT: \n320-430 для мужчин и 320-450 для женщин");
         } else {
             double RR = 60 / result;
             double cons = 0.154;
@@ -242,7 +282,7 @@ public class CalculatorEngine implements EventHandler<ActionEvent> {
             BigDecimal aroundQTc = new BigDecimal(QTc).setScale(0, RoundingMode.HALF_EVEN);
             controller.displayField.setText("" + aroundQTc);
             QT = 0;
-            return ("QTc (по формуле Framingham) = " + aroundQTc + " мсек\n");
+            return ("QTc (по формуле Framingham) = " + aroundQTc + " мсек\n\n Референтные значения корригированного QT: \n320-430 для мужчин и 320-450 для женщин");
         }
     }
 
