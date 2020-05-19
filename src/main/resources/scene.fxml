@@ -15,39 +15,35 @@
   <children>
     <MenuBar prefHeight="20.0" prefWidth="350.0" VBox.vgrow="NEVER">
       <menus>
-        <Menu mnemonicParsing="false" text="File">
+        <Menu mnemonicParsing="false" text="Файл">
           <items>
-            <MenuItem mnemonicParsing="false" text="New" />
-            <MenuItem mnemonicParsing="false" text="Open…" />
-            <Menu mnemonicParsing="false" text="Open Recent" />
+            <MenuItem mnemonicParsing="false" text="Новый" />
+            <MenuItem mnemonicParsing="false" text="Открыть …" />
+            <MenuItem mnemonicParsing="false" text="Сохранить" />
             <SeparatorMenuItem mnemonicParsing="false" />
-            <MenuItem mnemonicParsing="false" text="Close" />
-            <MenuItem mnemonicParsing="false" text="Save" />
-            <MenuItem mnemonicParsing="false" text="Save As…" />
-            <MenuItem mnemonicParsing="false" text="Revert" />
+            <MenuItem mnemonicParsing="false" text="Настройки …" />
             <SeparatorMenuItem mnemonicParsing="false" />
-            <MenuItem mnemonicParsing="false" text="Preferences…" />
-            <SeparatorMenuItem mnemonicParsing="false" />
-            <MenuItem mnemonicParsing="false" text="Quit" />
+            <MenuItem mnemonicParsing="false" fx:id="shutDown" onAction="#shutdown" text="Выход" />
           </items>
         </Menu>
-        <Menu mnemonicParsing="false" text="Edit">
+        <Menu mnemonicParsing="false" text="Правка">
           <items>
-            <MenuItem mnemonicParsing="false" text="Undo" />
-            <MenuItem mnemonicParsing="false" text="Redo" />
+            <MenuItem mnemonicParsing="false" text="Шаг назад" />
+            <MenuItem mnemonicParsing="false" text="Повторить" />
             <SeparatorMenuItem mnemonicParsing="false" />
-            <MenuItem mnemonicParsing="false" text="Cut" />
-            <MenuItem mnemonicParsing="false" text="Copy" />
-            <MenuItem mnemonicParsing="false" text="Paste" />
-            <MenuItem mnemonicParsing="false" text="Delete" />
+            <MenuItem mnemonicParsing="false" text="Вырезать" />
+            <MenuItem mnemonicParsing="false" text="Копировать" />
+            <MenuItem mnemonicParsing="false" text="Вставить" />
+            <MenuItem mnemonicParsing="false" text="Удалить" />
             <SeparatorMenuItem mnemonicParsing="false" />
-            <MenuItem mnemonicParsing="false" text="Select All" />
-            <MenuItem mnemonicParsing="false" text="Unselect All" />
+            <MenuItem mnemonicParsing="false" text="Выбрать все" />
           </items>
         </Menu>
-        <Menu mnemonicParsing="false" text="Help">
+        <Menu mnemonicParsing="false" text="Помощь">
           <items>
-            <MenuItem mnemonicParsing="false" text="About MyHelloApp" />
+            <MenuItem mnemonicParsing="false" text="О приложении" />
+            <MenuItem mnemonicParsing="false" text="Как подсчитать СКФ ?" />
+            <MenuItem mnemonicParsing="false" text="Как подсчитать QTc ?" />
           </items>
         </Menu>
       </menus>

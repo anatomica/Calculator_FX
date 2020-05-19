@@ -24,7 +24,7 @@ public class Calculator extends javafx.application.Application {
         scene = new Scene(root);
 
         Controller controller = loader.getController();
-        // stage.setOnHidden(e -> controller.shutdown());
+        stage.setOnHidden(e -> controller.shutdown());
         stage.setOnHidden(event -> { });
         stage.setScene(scene);
         stage.setX(1200);

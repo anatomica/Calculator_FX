@@ -75,6 +75,8 @@ public class CalculatorEngine implements EventHandler<ActionEvent> {
 
         // Выбор арифметического действия
         if (screen == controller.numButtons[4]) {
+            QT = 0;
+            SKF = 0;
             result = 0;
             displayValue = 0;
             controller.displayField.setText("0");
@@ -134,15 +136,9 @@ public class CalculatorEngine implements EventHandler<ActionEvent> {
             mark = 1;
             QT = 1;
         } else if ((SKF == 1 || QT == 1) && screen == controller.numButtons[3] && displayValue != 0) {
-            if (SKF == 1) {
-                controller.showMessage("СКФ (по формуле CKD-EPI): = " + resultSKF() + " мл/мин/1,73м2\n" +
+            if (SKF == 1) controller.showMessage("СКФ (по формуле CKD-EPI): = " + resultSKF() + " мл/мин/1,73м2\n" +
                         "Градация " + value + "  (по классификации KDIGO)");
-                SKF = 0;
-            }
-            if (QT == 1) {
-                controller.showMessage("QTc (по формуле Базетта) = " + resultQTc() + " мсек\n");
-                QT = 0;
-            }
+            if (QT == 1) controller.showMessage(resultQTc());
         } else if (screen == controller.numButtons[20]) {
             StringBuilder str = new StringBuilder(controller.displayField.getText());
             if (str.length() > 0 && str.charAt(0) != '-') {
@@ -227,16 +223,27 @@ public class CalculatorEngine implements EventHandler<ActionEvent> {
         if (GFR < 15 && GFR > 0)
             value = "5";
 
+        SKF = 0;
         return aroundGFR;
     }
 
-    private BigDecimal resultQTc() {
-        // QTс(S) = QT + 0,154×(1000 − RR)
-        double heartRate = 60 / result;
-        double QTc = displayValue / Math.sqrt(heartRate);
-        BigDecimal aroundQTc = new BigDecimal(QTc).setScale(0, RoundingMode.HALF_EVEN);
-        controller.displayField.setText("" + aroundQTc);
-        return aroundQTc;
+    private String resultQTc() {
+        if (result >= 60 && result <= 100) {
+            double RR = 60 / result;
+            double QTc = displayValue / Math.sqrt(RR);
+            BigDecimal aroundQTc = new BigDecimal(QTc).setScale(0, RoundingMode.HALF_EVEN);
+            controller.displayField.setText("" + aroundQTc);
+            QT = 0;
+            return ("QTc (по формуле Базетта) = " + aroundQTc + " мсек\n");
+        } else {
+            double RR = 60 / result;
+            double cons = 0.154;
+            double QTc = displayValue + (cons * (1 - RR)) * 1000;
+            BigDecimal aroundQTc = new BigDecimal(QTc).setScale(0, RoundingMode.HALF_EVEN);
+            controller.displayField.setText("" + aroundQTc);
+            QT = 0;
+            return ("QTc (по формуле Framingham) = " + aroundQTc + " мсек\n");
+        }
     }
 
     private String stringWithoutZero(double result) {

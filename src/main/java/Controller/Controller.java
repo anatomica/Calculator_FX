@@ -18,9 +18,12 @@ public class Controller implements Initializable {
     public TextField displayField;
     @FXML
     public GridPane gridPane;
+    @FXML
+    public MenuItem shutDown;
 
     public Button[] numButtons = new Button[24];
     public CalculatorEngine calculatorEngine = new CalculatorEngine(this);
+
 
 
     @Override
@@ -79,6 +82,10 @@ public class Controller implements Initializable {
             alert.setResizable(true);
             alert.showAndWait();
         });
+    }
+
+    public void shutdown() {
+        System.exit(0);
     }
 }
 
