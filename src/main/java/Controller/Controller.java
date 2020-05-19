@@ -40,7 +40,7 @@ public class Controller implements Initializable {
         displayField.setFocusTraversable(false);
         displayField.setText("0");
 
-        String[] buttonName = {"Жен", "Подсчет \nСКФ", "Подсчет QT", "= СКФ \n= QTc", "Сброс", "<=", "(^)", "/",
+        String[] buttonName = {"Жен", "Подсчет \nСКФ", "Подсчет \nQT", "= СКФ \n= QTc", "Сброс", "<=", "(^)", "/",
                 "1", "2", "3", "*", "4", "5", "6", "-", "7", "8", "9", "+", "+/-", "0", ".", "="};
 
         for (int i = 0; i < numButtons.length; i++) {

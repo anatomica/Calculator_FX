@@ -274,7 +274,7 @@ public class CalculatorEngine implements EventHandler<ActionEvent> {
             BigDecimal aroundQTc = new BigDecimal(QTc).setScale(0, RoundingMode.HALF_EVEN);
             controller.displayField.setText("" + aroundQTc);
             QT = 0;
-            return ("QTc (по формуле Базетта) = " + aroundQTc + " мсек\n\n Референтные значения корригированного QT: \n320-430 для мужчин и 320-450 для женщин");
+            return ("QTc (по формуле Базетта) = " + aroundQTc + " мсек\n\nРеферентные значения корригированного QT: \n320-430 для мужчин и 320-450 для женщин");
         } else {
             double RR = 60 / result;
             double cons = 0.154;
@@ -282,7 +282,7 @@ public class CalculatorEngine implements EventHandler<ActionEvent> {
             BigDecimal aroundQTc = new BigDecimal(QTc).setScale(0, RoundingMode.HALF_EVEN);
             controller.displayField.setText("" + aroundQTc);
             QT = 0;
-            return ("QTc (по формуле Framingham) = " + aroundQTc + " мсек\n\n Референтные значения корригированного QT: \n320-430 для мужчин и 320-450 для женщин");
+            return ("QTc (по формуле Framingham) = " + aroundQTc + " мсек\n\nРеферентные значения корригированного QT: \n320-430 для мужчин и 320-450 для женщин");
         }
     }
 
